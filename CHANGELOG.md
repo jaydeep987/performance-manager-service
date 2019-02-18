@@ -1,0 +1,2 @@
+- **1.0.0:**
+  - Adding webservice for performance manager ui app
