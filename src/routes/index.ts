@@ -1,9 +1,9 @@
 import * as express from 'express';
 
-import { EventRoutes } from './event';
+import { UserRoutes } from './users';
 
 const routes = express.Router();
 
-routes.use('/event', new EventRoutes().getRouter());
+routes.use('/users', new UserRoutes().getRouter());
 
 export { routes };

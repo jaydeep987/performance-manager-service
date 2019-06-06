@@ -1,10 +1,10 @@
 import * as http from 'http';
+import { EnvVars, config } from '~common/config';
 
 import { app } from './app';
 import { Logger } from './utils/logger';
 
-const DEFAULT_PORT = 3000;
-const port = process.env.PORT || DEFAULT_PORT;
+const port = config.get(EnvVars.PORT);
 app.set('port', port);
 
 const server = http.createServer(app);

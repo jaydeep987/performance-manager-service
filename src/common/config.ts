@@ -27,9 +27,9 @@ const config = nconf
   })
   // provide defaults for dev env or defaults
   .defaults({
-    [EnvVars.PORT]: 3000,
+    [EnvVars.PORT]: 3200,
     [EnvVars.NODE_ENV]: 'development',
-    [EnvVars.MONGO_URL]: 'mongodb://localhost:27017/performance-manager',
+    [EnvVars.MONGO_URL]: 'mongodb://localhost:27017/performance_manager',
     [EnvVars.LOG_FILE_NAME]: 'logs/performance-manager-service-log.log',
   });
 
