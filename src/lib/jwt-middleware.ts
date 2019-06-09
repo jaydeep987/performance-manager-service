@@ -11,7 +11,7 @@ export function jwt(): RequestHandler {
   return expressJwt({
     secret: JWT_SECRET,
     getToken: ((req) => {
-      const token = req.cookies && req.cookies.token;
+      const token = req.cookies && req.cookies.token && req.cookies.token.token;
 
       return token;
     }),
@@ -20,6 +20,7 @@ export function jwt(): RequestHandler {
     path: [
       '/users/authenticate',
       '/users/register',
+      '/users/logout',
     ],
   });
 }

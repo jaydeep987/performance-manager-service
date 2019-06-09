@@ -5,6 +5,7 @@ import * as path from 'path';
 export const EnvVars = {
   MONGO_URL: 'MONGO_URL',
   NODE_ENV: 'NODE_ENV',
+  HOST: 'HOST',
   PORT: 'PORT',
   SECRET: 'SECRET',
   LOG_FILE_NAME: 'LOG_FILE_NAME',
@@ -20,6 +21,7 @@ const config = nconf
     EnvVars.PORT,
     EnvVars.SECRET,
     EnvVars.LOG_FILE_NAME,
+    EnvVars.HOST,
   ])
   // 3. Config file
   .file({
@@ -27,6 +29,7 @@ const config = nconf
   })
   // provide defaults for dev env or defaults
   .defaults({
+    [EnvVars.HOST]: '0.0.0.0',
     [EnvVars.PORT]: 3200,
     [EnvVars.NODE_ENV]: 'development',
     [EnvVars.MONGO_URL]: 'mongodb://localhost:27017/performance_manager',

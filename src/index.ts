@@ -5,10 +5,12 @@ import { app } from './app';
 import { Logger } from './utils/logger';
 
 const port = config.get(EnvVars.PORT);
+const host = config.get(EnvVars.HOST);
+app.set('host', host);
 app.set('port', port);
 
 const server = http.createServer(app);
-server.listen(port);
+server.listen(port, host);
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -40,6 +42,6 @@ function onError(error: NodeJS.ErrnoException): void {
  */
 function onListening(): void {
   const addr = server.address();
-  const bind = typeof addr === 'string' ? `Pipe ${addr}` : `Port ${addr.port}`;
+  const bind = typeof addr === 'string' ? `Pipe ${addr}` : `Address: ${addr.address} Port ${addr.port}`;
   Logger.info({message: `Listening on ${bind}`, prefix: 'Server'});
 }

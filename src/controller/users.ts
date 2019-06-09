@@ -92,7 +92,8 @@ class UserController extends ControllerBase {
         const token = jwt.sign({ sub: user.get('userName') }, JWT_SECRET);
 
         // We won't send token client side in response, we will store in httpOnly cookie
-        res.cookie('token', token, { httpOnly: true });
+        // Also store user id in cookie
+        res.cookie('token', { token, userId: userWithoutPassword._id }, { httpOnly: true });
 
         return res
           .status(ResponseStatus.OK)
@@ -252,7 +253,7 @@ class UserController extends ControllerBase {
         .json(user);
     } catch (error) {
       Logger.error({
-        message: 'Error while deleting',
+        message: 'Error while updating',
         prefix: `${this.controllerName}:update`,
         extraInfo: error,
       });
