@@ -28,6 +28,7 @@ class AssigneeRoutes extends RouterBase {
     const assigneeController = this.assigneeController;
 
     assigneeRoutes.post('/', assigneeController.getAll);
+    assigneeRoutes.post('/assigned', assigneeController.getAssignedEmployees);
     assigneeRoutes.post('/create', assigneeController.create);
     assigneeRoutes.get('/:_id', assigneeController.getById);
     assigneeRoutes.delete('/', assigneeController.deleteById);

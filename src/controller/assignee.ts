@@ -3,8 +3,8 @@ import * as Joi from 'joi';
 import { ErrorTypes, ResponseStatus } from '~common/constants';
 import { ControllerBase } from '~lib/controller-base';
 import { AssigneeModel, assigneeValidationSchema } from '~model/assignee';
-import { Logger } from '~utils/logger';
 import { UserModel } from '~model/user';
+import { Logger } from '~utils/logger';
 
 /**
  * Controller for handling assignee related routes
@@ -126,6 +126,91 @@ class AssigneeController extends ControllerBase {
                 localField: 'assigneeId',
                 foreignField: '_id',
                 as: 'assigneeInfo',
+              },
+            },
+          ])
+          .exec();
+
+      if (!assignees) {
+        return res
+          .status(ResponseStatus.NOT_FOUND)
+          .json(this.wrapErrorResponse('Record not found', ErrorTypes.FETCH_ERROR));
+      }
+
+      return res
+        .status(ResponseStatus.OK)
+        .json(assignees);
+
+    } catch (error) {
+      Logger.error({
+        message: 'Error while retrieving',
+        prefix: `${this.controllerName}:getAll`,
+        extraInfo: error,
+      });
+
+      return res
+        .status(ResponseStatus.INTERNAL_ERROR)
+        .json(this.wrapErrorResponse(error, ErrorTypes.INTERNAL_ERROR));
+    }
+  }
+
+  /**
+   * Get employees who are assigned to given assignee.
+   */
+  getAssignedEmployees = async (req: Request, res: Response): Promise<Response> => {
+    if (!req.body.assigneeId) {
+      return res
+        .status(ResponseStatus.BAD_REQUEST)
+        .json(this.wrapErrorResponse('Missing Assignee Id parameter', ErrorTypes.PARAM_ERROR));
+    }
+
+    try {
+      const { assigneeId } = req.body;
+
+      const assignees =
+        await AssigneeModel
+          .aggregate([
+            {
+              $match: {
+                assigneeId,
+              },
+            },
+            {
+              $addFields: {
+                assignedEmployeeId: {
+                  $toObjectId: '$assignedEmployeeId',
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'assignedEmployeeId',
+                foreignField: '_id',
+                as: 'assignedEmployeeInfo',
+              },
+            },
+            {
+              $replaceRoot: {
+                newRoot: {
+                  $mergeObjects: [
+                    { $arrayElemAt: [ '$assignedEmployeeInfo', 0 ] },
+                    '$$ROOT',
+                  ],
+                },
+              },
+            },
+            {
+              $addFields: {
+                _id: {
+                  $toObjectId: '$assignedEmployeeId',
+                },
+              },
+            },
+            {
+              $project: {
+                assignedEmployeeInfo: 0,
+                password: 0,
               },
             },
           ])

@@ -15,7 +15,6 @@ export function errorHandler(err: string | Error, req: Request, res: Response, n
 
   // mongoose validation error
   if (err.name === 'ValidationError') {
-    console.log('...... err');
     return res
       .status(ResponseStatus.BAD_REQUEST)
       .json({ message: err.message });

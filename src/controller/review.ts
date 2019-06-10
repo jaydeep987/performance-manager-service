@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import * as Joi from 'joi';
 import { ErrorTypes, ResponseStatus } from '~common/constants';
 import { ControllerBase } from '~lib/controller-base';
+import { FeedbackModel } from '~model/feedback';
 import { ReviewModel, reviewValidationSchema } from '~model/review';
 import { Logger } from '~utils/logger';
-import { FeedbackModel } from '~model/feedback';
 
 /**
  * Controller for handling review related routes
@@ -101,6 +101,38 @@ class ReviewController extends ControllerBase {
                 localField: 'rid',
                 foreignField: 'reviewId',
                 as: 'feedbacks',
+              },
+            },
+            {
+              $addFields: {
+                updatedBy: {
+                  $toObjectId: '$updatedBy',
+                },
+              },
+            },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'updatedBy',
+                foreignField: '_id',
+                as: 'userInfo',
+              },
+            },
+            {
+              $replaceRoot: { newRoot: { $mergeObjects: [ { $arrayElemAt: [ '$userInfo', 0 ] }, '$$ROOT' ] } },
+            },
+            {
+              $project: {
+                _id: 1,
+                createdBy: 1,
+                createdDate: 1,
+                description: 1,
+                employeeId: 1,
+                feedbacks: 1,
+                rid: 1,
+                updatedBy: 1,
+                updatedDate: 1,
+                reviewBy: { $concat: [ '$firstName', ' ' , '$lastName' ] },
               },
             },
           ])

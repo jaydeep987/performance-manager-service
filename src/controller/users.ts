@@ -4,6 +4,9 @@ import * as jwt from 'jsonwebtoken';
 import { ErrorTypes, ResponseStatus } from '~common/constants';
 import { ControllerBase } from '~lib/controller-base';
 import { JWT_SECRET } from '~lib/jwt-middleware';
+import { AssigneeModel } from '~model/assignee';
+import { FeedbackModel } from '~model/feedback';
+import { ReviewModel } from '~model/review';
 import { UserModel, authValidationSchema, userValidationSchema } from '~model/user';
 import { Logger } from '~utils/logger';
 
@@ -233,7 +236,7 @@ class UserController extends ControllerBase {
           return res
             .status(ResponseStatus.BAD_REQUEST)
             .json(
-              this.wrapErrorResponse('Username you are trying to change is already exists', ErrorTypes.PARAM_ERROR)
+              this.wrapErrorResponse('Username you are trying to change is already exists', ErrorTypes.PARAM_ERROR),
             );
         }
       }
@@ -274,6 +277,13 @@ class UserController extends ControllerBase {
         .json(this.wrapErrorResponse('Missing Id paramter', ErrorTypes.PARAM_ERROR));
     }
 
+    // User should not delete himself!
+    if (req.body._id === req.cookies.token.userId) {
+      return res
+        .status(ResponseStatus.BAD_REQUEST)
+        .json(this.wrapErrorResponse('You should not delete yourself!!', ErrorTypes.PARAM_ERROR));
+    }
+
     try {
       const deletedUser =
         await UserModel
@@ -285,6 +295,35 @@ class UserController extends ControllerBase {
           .status(ResponseStatus.NOT_FOUND)
           .json(this.wrapErrorResponse('User not found', ErrorTypes.FETCH_ERROR));
       }
+
+      // Need to delete all refs of users from other collections
+      // TODO: Might be better way to delete together
+      // Also transactions
+      await AssigneeModel
+        .deleteMany({
+          assigneeId: req.body._id,
+        })
+        .exec();
+      await AssigneeModel
+        .deleteMany({
+          assignedEmployeeId: req.body._id,
+        })
+        .exec();
+      await ReviewModel
+        .deleteMany({
+          employeeId: req.body._id,
+        })
+        .exec();
+      await ReviewModel
+        .deleteMany({
+          updatedBy: req.body._id,
+        })
+        .exec();
+      await FeedbackModel
+        .deleteMany({
+          employeeId: req.body._id,
+        })
+        .exec();
 
       return res
         .status(ResponseStatus.OK)
