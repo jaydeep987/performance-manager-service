@@ -1,6 +1,25 @@
 import * as Joi from 'joi';
 import { Schema, model } from 'mongoose';
 
+import { User } from './user';
+
+export interface Assignee {
+  /** Assignee id */
+  assigneeId: string;
+  /** Assigned employee id to whome assignees are assigned */
+  assignedEmployeeId: string;
+  /** Document created by */
+  createdBy?: string;
+  /** Document created date */
+  createdDate?: string;
+  /** Document updated date */
+  updatedBy?: string;
+  /** Document updated date */
+  updatedDate?: string;
+  /** Assignee's info (as it's User) */
+  assigneeInfo?: User[];
+}
+
 const AssigneeSchema = new Schema({
   assigneeId: {
     type: String,

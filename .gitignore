@@ -4,6 +4,7 @@
 node_modules/
 dist/
 logs/
-coverage/
+coverage
 
 .DS_Store
+.nyc_output

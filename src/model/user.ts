@@ -1,6 +1,29 @@
 import * as Joi from 'joi';
 import { Schema, model } from 'mongoose';
 
+export interface User {
+  /** User name, unique */
+  userName: string;
+  /** first name of user */
+  firstName: string;
+  /** last name of user */
+  lastName: string;
+  /** Gender of user */
+  sex: string;
+  /** Role: admin, normal etc */
+  role: string;
+  /** Password of user */
+  password: string;
+  /** Document created date */
+  createdBy?: string;
+  /** Document created date */
+  createdDate?: string;
+  /** Document created date */
+  updatedBy?: string;
+  /** Document created date */
+  updatedDate?: string;
+}
+
 const UserSchema = new Schema({
   userName: {
     type: String,

@@ -8,7 +8,8 @@ import { ResponseStatus } from '~common/constants';
 import { errorHandler } from '~lib/error-handler';
 import { jwt } from '~lib/jwt-middleware';
 
-import { mongoConnect } from './common/config';
+import { EnvVars, config } from './common/config';
+import { mongoConnect } from './lib/mongo-connect';
 import { routes } from './routes';
 
 /**
@@ -16,23 +17,28 @@ import { routes } from './routes';
  */
 class App {
   /** Express instance to start with */
-  express: express.Application;
+  private express: express.Application;
 
-  constructor() {
+  /**
+   * Creates and initializes app
+   */
+  async createApp(): Promise<express.Application> {
     this.express = express();
-    this.middleware();
+    await this.middleware();
     this.routes();
     this.configureErrorHandler();
+
+    return this.express;
   }
 
   /**
    * Configures middlewares
    */
-  private middleware(): void {
-    mongoConnect(); // tslint:disable-line:no-floating-promises
+  private async middleware(): Promise<void> {
+    await mongoConnect();
 
-    const corsOptions = {
-      origin: 'http://localhost:8080',
+    const corsOptions: cors.CorsOptions = {
+      origin: config.get(EnvVars.ORIGIN_ALLOWED),
       optionsSuccessStatus: ResponseStatus.OK, // some legacy browsers (IE11, various SmartTVs) choke on 204
       credentials: true,
     };
@@ -65,6 +71,4 @@ class App {
   }
 }
 
-const app = new App().express;
-
-export { app };
+export { App };
