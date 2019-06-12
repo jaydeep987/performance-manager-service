@@ -12,9 +12,7 @@
     "prod": "npm run start",
     "test": "NODE_ENV=test mocha --timeout 5000 --exit --reporter spec --require ts-node/register -r tsconfig-paths/register 'test/**/*.test.ts'",
     "coverage": "nyc --reporter html --reporter text npm test",
-    "lint": "tslint src/**/*.ts",
-    "tsc": "tsc",
-    "tslint": "tslint"
+    "lint": "tslint src/**/*.ts"
   },
   "keywords": [
     "nodejs",
@@ -64,6 +62,7 @@
     "chai-http": "^4.2.1",
     "mocha": "^5.2.0",
     "mongodb-memory-server": "^3.1.1",
+    "nodemon": "^1.19.1",
     "nyc": "^14.1.1",
     "proxyquire": "^2.1.0",
     "rimraf": "^2.6.3",

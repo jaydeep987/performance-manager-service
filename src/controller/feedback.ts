@@ -7,6 +7,8 @@ import { Logger } from '~utils/logger';
 
 /**
  * Controller for handling feedback related routes
+ * 
+ * TODO: Before create/update/delete feedback, check review exists or not in db.
  */
 class FeedbackController extends ControllerBase {
 
