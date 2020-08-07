@@ -2,7 +2,7 @@
 Service for performance manager ui. Part of coding challenge and independent component for whole app!
 
 ## Contents
-- [About challenge](https://github.com/Pay-Baymax/FullStackEngineerChallenge)
+- [About](#about)
 - [Features & Technology stack](#features-technology-stack-used)
 - [Getting started](#getting-started)
   - [Prerequisites](#prerequisites)
@@ -16,11 +16,10 @@ Service for performance manager ui. Part of coding challenge and independent com
 - [Basic Database design](./docs/database.md)
 - [UI Design and spec](https://github.com/jaydeep987/performance-manager-ui.git)
 
-## The Challenge
+## About
 
 Challenge is to build UI to allow users to manage review and feedback system. For the UI, need to manage data in backend, and
 for that this is service provided to UI.
-[Details of challenge]()
 
 ## Features (Technology stack used)
 
